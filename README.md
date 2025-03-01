@@ -15,7 +15,7 @@ MessageXL is a lightweight, elegant web application for sharing longer messages 
 
 ## Demo
 
-Check out the live demo: [MessageXL Demo](https://your-demo-url-here.com)
+Check out the live demo: [MessageXL Demo](https://messagexl.web.app/)
 
 ## Getting Started
 
