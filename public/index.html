@@ -1,0 +1,189 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MessageXL - Share Longer Messages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="light-mode">
+    <div class="theme-toggle">
+        <button id="theme-switch" aria-label="Toggle dark/light mode">
+            <iconify-icon id="theme-icon" icon="line-md:moon-to-sunny-outline-loop-transition"></iconify-icon>
+        </button>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <iconify-icon class="animate-icon" icon="line-md:message-twotone"></iconify-icon>
+                <h1>MessageXL</h1>
+            </div>
+            <p class="tagline">Share longer thoughts, beautifully.</p>
+            <div class="header-links">
+                <a href="#" id="open-rules">Rules & Policies</a>
+                <a href="https://nexas-development.vercel.app" target="_blank">Made by Nexas Studios</a>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="compose">Compose</button>
+            <button class="tab" data-tab="view">View Message</button>
+        </div>
+
+        <div class="tab-content show" id="compose-tab">
+            <div class="compose-area">
+                <div class="card">
+                    <div class="markdown-help">
+                        <button class="btn-help" id="markdown-help-btn">
+                            <iconify-icon icon="line-md:help-circle"></iconify-icon>
+                            Markdown Help
+                        </button>
+                        <div class="formatting-tip">
+                            Supports Markdown: **bold**, *italic*, [links](url), # headers, etc.
+                        </div>
+                    </div>
+                    <textarea id="message-input" placeholder="What's on your mind? Share your thoughts without limits... Supports Markdown formatting!"></textarea>
+                    <div class="preview-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="preview-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Preview</span>
+                    </div>
+                    <div id="markdown-preview" class="markdown-preview hidden"></div>
+                    <div class="controls">
+                        <div class="char-count">0 characters</div>
+                        <button id="publish-btn" class="btn primary">
+                            <iconify-icon icon="line-md:sending-loop"></iconify-icon>
+                            Publish
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="result-area hidden" id="publish-result">
+                    <div class="card success-card">
+                        <h3>Message Published!</h3>
+                        <p>Share your message with this link:</p>
+                        <div class="link-container">
+                            <input type="text" id="share-link" readonly>
+                            <button id="copy-link" class="btn secondary">
+                                <iconify-icon icon="line-md:content-copy"></iconify-icon>
+                                Copy
+                            </button>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="new-message" class="btn secondary">
+                                <iconify-icon icon="line-md:add"></iconify-icon>
+                                New Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="view-tab">
+            <div class="card">
+                <div class="view-form">
+                    <div class="input-group">
+                        <input type="text" id="message-code" placeholder="Enter message code or full URL">
+                        <button id="view-btn" class="btn primary">
+                            <iconify-icon icon="line-md:visibility"></iconify-icon>
+                            View
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <iconify-icon icon="line-md:alert"></iconify-icon>
+                    <p>Warning: Never visit websites you don't trust and always verify links before clicking. Do not download content or enter sensitive information like passwords or payment details. Our service is and will always be free and ad-free. We don't collect any data and will never do so in any future versions. Report illegal content to your local authorities.</p>
+                </div>
+                
+                <div class="message-display hidden" id="message-display">
+                    <div class="message-meta">
+                        <span id="message-date">Just now</span>
+                    </div>
+                    <div id="message-content" class="message-content"></div>
+                    <div class="action-buttons">
+                        <button id="copy-message" class="btn secondary">
+                            <iconify-icon icon="line-md:content-copy"></iconify-icon>
+                            Copy Text
+                        </button>
+                        <button id="share-message" class="btn secondary">
+                            <iconify-icon icon="line-md:share"></iconify-icon>
+                            Share
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="error-message hidden" id="error-message">
+                    <iconify-icon icon="line-md:error-outline"></iconify-icon>
+                    <p>Message not found. Please check the code and try again.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MessageXL 2025 - Share your thoughts without constraints</p>
+        <p class="disclaimer">The creator is not responsible for user-generated content. Illegal content is prohibited.</p>
+        <p class="footer-links">
+            <a href="#" id="open-terms">Terms of Service</a> | 
+            <a href="#" id="open-privacy">Privacy Policy</a> |
+            <a href="https://nexas-development.vercel.app" target="_blank">Nexas Studios</a>
+        </p>
+    </footer>
+
+    <div class="toast hidden" id="toast">
+        <span id="toast-message">Link copied to clipboard!</span>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-title">Rules & Policies</h2>
+                <button id="modal-close">
+                    <iconify-icon icon="line-md:close-circle"></iconify-icon>
+                </button>
+            </div>
+            <div class="modal-content" id="modal-content"></div>
+        </div>
+    </div>
+
+    <div id="markdown-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Markdown Guide</h2>
+                <button id="markdown-modal-close">
+                    <iconify-icon icon="line-md:close-circle"></iconify-icon>
+                </button>
+            </div>
+            <div class="modal-content">
+                <h3>Basic Syntax</h3>
+                <table class="markdown-guide">
+                    <tr><th>Element</th><th>Markdown Syntax</th></tr>
+                    <tr><td>Heading</td><td><code># H1<br>## H2<br>### H3</code></td></tr>
+                    <tr><td>Bold</td><td><code>**bold text**</code></td></tr>
+                    <tr><td>Italic</td><td><code>*italicized text*</code></td></tr>
+                    <tr><td>Blockquote</td><td><code>> blockquote</code></td></tr>
+                    <tr><td>Link</td><td><code>[title](https://www.example.com)</code></td></tr>
+                    <tr><td>List</td><td><code>- Item 1<br>- Item 2</code></td></tr>
+                    <tr><td>Code</td><td><code>`code`</code></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
