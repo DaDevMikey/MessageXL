@@ -129,6 +129,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
+DaDevMikey - @DaManMikey on Discord - nexasstudiosdevelopment@gmail.com
 
-Project Link: [https://github.com/yourusername/messagexl](https://github.com/yourusername/messagexl) 
+Project Link: [https://github.com/dadevmikey/messagexl](https://github.com/dadevmikey/messagexl) 
